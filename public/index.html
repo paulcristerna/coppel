@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Coppel | Mejora tu vida</title>
+    <link href="css/bootswatch-paper.min.css" rel="stylesheet">
+    <link href="css/appstore.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+  </head>
+  <body ng-app="coppelApp" ng-cloak>
+
+    <div class="container" ng-controller="productsCtrl as products">
+        
+        <!-- header -->
+
+        <div class="row header">
+            <div class="col-md-5">
+                <p><a href="#/"><img src="img/logo_coppel.png" width="180" alt="coppel"></a></p>
+            </div><!-- /.col -->
+
+            <div class="col-md-3">
+                <input type="text" class="form-control" placeholder="ej. relojes caballero" ng-model="products.searchInput" ng-change="products.search()">
+            </div><!-- /.col -->
+
+            <div class="col-md-2">
+                <div class="btn-group pull-right">
+                    <a href="#/" class="btn btn-primary">{{products.nameFilter}}</a>
+                    <a href="#/" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="category in products.categories">
+                            <a href="#/" ng-click="products.filter(category.title)">{{category.description}}
+                        </a></li>
+                    </ul>
+                </div><!-- /.btn-group -->
+            </div>
+
+            <div class="col-md-2">
+                <ul class="nav nav-pills pull-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> <span class="badge amarillo-coppel">{{products.countCart}}</span></a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                </ul>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+
+        <!-- products list -->
+
+        <div class="row">
+            <div ng-repeat="product in products.filtered = (products.list | filter: products.searchMaster) | limitTo:products.numberProducts" class="col-md-3 text-center product" data-toggle="modal" data-target="#myModal" ng-click="products.details(product._id)">
+                <p><a href="#/"><img ng-src="{{product.image}}" width="100%" alt="{{product.name}}"></a></p>
+                <h4>{{product.name}}</h4>
+                <p>{{product.description}}.</p>
+                <p><button class="btn btn-primary">
+                    <strong>{{product.price|currency}}</strong> pesos.
+                    <span class="glyphicon glyphicon-tag"></span>
+                </button></p>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+
+        <div class="row" ng-show="products.numberProducts < products.filtered.length">
+            <div class="col-md-12 text-center loadmore">
+                  <button class="btn btn-warning" ng-click="products.viewMore()"><span class="glyphicon glyphicon-repeat"></span> Cargar más...</button>
+                </ul>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+
+        <footer>
+            <div class="row">
+                <div class="col-md-12 footer">
+                    <p>CoppelApp v1.0.0. <br />
+                    Developed by <a href="#/">Hipsterna</a>. <br />
+                    All rights reserved 2015-2016.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- modal -->
+
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <img src="img/logo_coppel.png" width="150" alt="coppel">
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><img ng-src="{{products.master.image}}" width="100%" alt="{{products.master.name}}"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>{{products.master.name}}</h3>
+                                <h4>{{products.master.brand}}</h4>
+                                <p class="text-capitalize"><strong>{{products.master.tags}}</strong>.</p>
+                                <p>{{products.master.description}}.</p>
+                                <p class="text-primary">
+                                    <strong>{{(products.master.price*products.quantity)|currency}}</strong> pesos. 
+                                    <span class="text-warning glyphicon glyphicon-tag"></span>
+                                </p>
+                                <form class="form-inline">
+                                  <div class="form-group">
+                                    <input type="number" class="form-control" style="width:50px;" min="1" max="100" step="1" value="1" ng-model="products.quantity">
+                                    </div>
+                                  <div class="form-group">
+                                    <div class="btn-group">
+                                        <a href="#/" class="btn btn-primary">{{products.sizeName}}</a>
+                                        <a href="#/" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li ng-repeat="size in products.sizes"><a href="#/" ng-click="products.changeSize(size.name)">{{size.name}}</a></li>
+                                        </ul>
+                                    </div>  
+                                    </div>  
+                                </form>
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                    </div><!-- /.modal-body -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cerrar
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="products.addCart(products.quantity)">Agregar al carrito <span class="glyphicon glyphicon-shopping-cart"></span>
+                        </button>
+                    </div><!-- /.modal-footer -->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+    </div><!-- /.container -->
+
+    <!-- scripts -->
+
+    <script src="js/jquery-1.12.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/controllers.js"></script>
+
+  </body>
+</html>
